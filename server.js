@@ -1,24 +1,33 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
+const dataLayer = require('./data/dataLayer');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-app.use(express.static( path.join(__dirname,'public')))
+app.use(express.static( path.join(__dirname,'data')))
 app.use(express.json());
 app.use(morgan('json'))
 
-app.get('/', (req, res, next) => {
+app.get('/calander', async (req, res, next) => {
   try {
-    /*
-    console.log(path.join(__dirname, '..', 'public'))
-    app.sendFile(path.join('index.html'))
-    */
-    res.send('<h1>In server</h1>')
+    const data = await dataLayer.readJSON('./data/calander.json')
+    res.send(data);
   }
   catch (ex) {
     res.send(ex);
+    next();
+  }
+})
+
+app.post('/calander', async (req, res, next) => {
+  try {
+    const response = await dataLayer.writeJSON('./data/calander.json', req.body);
+    res.send(response);
+  }
+  catch (err) {
+    res.send(err);
     next();
   }
 })

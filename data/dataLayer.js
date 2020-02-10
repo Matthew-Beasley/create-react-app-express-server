@@ -7,7 +7,7 @@ const writeJSON = (file, data) => {
         reject(err);
       }
       else {
-        resolve();
+        resolve(data);
       }
     })
   })
@@ -31,3 +31,5 @@ const readJSON = (file) => {
     })
   })
 }
+
+module.exports = { readJSON, writeJSON };
