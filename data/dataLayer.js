@@ -7,7 +7,7 @@ const writeJSON = (file, data) => {
         reject(err);
       }
       else {
-        resolve(data);
+        resolve();
       }
     })
   })

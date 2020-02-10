@@ -6,7 +6,6 @@ import uuid from 'uuid/v1';
 
 
 function App() {
-  const [content, setContent] = useState('');
   const [eventTitle, setEventTitle] = useState({});
   const [date, setDate] = useState('')
   const [events, setEvents] = useState([]);
@@ -23,8 +22,9 @@ function App() {
     
     axios.post('/calander', event)
       .then(response => {
-        response.data.sort((a, b) => { return a.date.valueOf() - b.date.valueOf() });
-        setEvents(response.data);
+        console.log(response.data)
+        //response.data.sort((a, b) => { return a.date.valueOf() - b.date.valueOf() });
+        setEvents([...events,response.data]);
       }
     )
   }
@@ -32,7 +32,10 @@ function App() {
 
   useEffect(() => {
     axios.get('/calander')
-    .then(response => setContent(response.data))
+      .then(response => {
+        console.log(response)
+        setEvents([...events, response])
+      })
   }, [])
   
 
@@ -50,7 +53,7 @@ function App() {
         <div id="event-list">
           {events.map((event, idx) => {
             return (
-              <div key={event.id}>{event.name}</div>
+              <div key={idx}>{event.name}</div>
             )
           })}
         </div>

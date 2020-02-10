@@ -23,8 +23,10 @@ app.get('/calander', async (req, res, next) => {
 
 app.post('/calander', async (req, res, next) => {
   try {
-    const response = await dataLayer.writeJSON('./data/calander.json', req.body);
-    res.send(response);
+    const original = await dataLayer.readJSON('./data/calander.json');
+    original.push(req.body);
+    await dataLayer.writeJSON('./data/calander.json', original);
+    res.send(original);
   }
   catch (err) {
     res.send(err);
