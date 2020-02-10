@@ -28,6 +28,13 @@ const Calander = () => {
     )
   }
 
+
+  const deleteEvent = (toDelete) => {
+    axios.delete(`/calander/${toDelete.id}`)
+      .then(response => setEvents(response.data));
+  }
+
+
   // does this belong here?
   useEffect(() => {
     axios.get('/calander')
@@ -54,6 +61,7 @@ const Calander = () => {
                 <p>{event.title}</p>
                 <p>{event.date}</p>
                 <p>{event.details}</p>
+                <button onClick={() => deleteEvent(event)}>Delete</button>
               </li>
             )
           })

@@ -10,6 +10,7 @@ app.use(express.static( path.join(__dirname,'data')))
 app.use(express.json());
 app.use(morgan('json'))
 
+
 app.get('/calander', async (req, res, next) => {
   try {
     const data = await dataLayer.readJSON('./data/calander.json')
@@ -21,12 +22,12 @@ app.get('/calander', async (req, res, next) => {
   }
 })
 
+
 app.post('/calander', async (req, res, next) => {
   try {
     const original = await dataLayer.readJSON('./data/calander.json');
     original.push(req.body);
     original.sort((a, b) => b.sortDate - a.sortDate);
-    console.log(original, ' in post (server) after sort')
     await dataLayer.writeJSON('./data/calander.json', original);
     res.send(original);
   }
@@ -35,6 +36,23 @@ app.post('/calander', async (req, res, next) => {
     next();
   }
 })
+
+
+app.delete('/calander/:id', async (req, res, next) => {
+  try {
+    const original = await dataLayer.readJSON('./data/calander.json');
+    const updated = original.filter(event => event.id !== req.params.id);
+    updated.sort((a, b) => b.sortDate - a.sortDate);
+    await dataLayer.writeJSON('./data/calander.json', updated);
+    res.send(updated);
+  }
+  catch (err) {
+    res.send(err);
+    next();
+  }
+})
+
+
 
 
 app.listen(PORT, () => console.log('Listening on port ', PORT));
