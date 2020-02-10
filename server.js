@@ -25,6 +25,8 @@ app.post('/calander', async (req, res, next) => {
   try {
     const original = await dataLayer.readJSON('./data/calander.json');
     original.push(req.body);
+    original.sort((a, b) => b.sortDate - a.sortDate);
+    console.log(original, ' in post (server) after sort')
     await dataLayer.writeJSON('./data/calander.json', original);
     res.send(original);
   }
