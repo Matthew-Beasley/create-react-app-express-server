@@ -44,7 +44,7 @@ app.delete('/calander/:id', async (req, res, next) => {
     const updated = original.filter(event => event.id !== req.params.id);
     updated.sort((a, b) => b.sortDate - a.sortDate);
     await dataLayer.writeJSON('./data/calander.json', updated);
-    res.status(500).send(updated);
+    res.status(200).send(updated);
   }
   catch (err) {
     res.status(500).send(err);
@@ -81,7 +81,7 @@ app.get('/journal', async (req, res, next) => {
     res.status(200).send(journal);
   }
   catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err.message);
   }
 })
 
@@ -89,12 +89,12 @@ app.get('/journal', async (req, res, next) => {
 app.post('/journal', async (req, res, next) => {
   try {
     const original = await dataLayer.readJSON('./data/journal.json');
-    const updated = `${original} ${req.body}`;
-    await dataLayer.writeJSON('./journal.json', updated);
-    res.status(200).send(updated);
+    const updated = [req.body, ...original];
+    await dataLayer.writeJSON('./data/journal.json', updated);
+    res.status(201).send(updated);
   }
   catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err.message);
   }
 })
 
