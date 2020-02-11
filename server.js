@@ -14,10 +14,10 @@ app.use(morgan('json'))
 app.get('/calander', async (req, res, next) => {
   try {
     const data = await dataLayer.readJSON('./data/calander.json')
-    res.send(data);
+    res.status(200).send(data);
   }
   catch (ex) {
-    res.send(ex);
+    res.status(500).send(ex);
     next();
   }
 })
@@ -29,10 +29,10 @@ app.post('/calander', async (req, res, next) => {
     original.push(req.body);
     original.sort((a, b) => b.sortDate - a.sortDate);
     await dataLayer.writeJSON('./data/calander.json', original);
-    res.send(original);
+    res.status(200).send(original);
   }
   catch (err) {
-    res.send(err);
+    res.status(500).send(err);
     next();
   }
 })
@@ -44,15 +44,58 @@ app.delete('/calander/:id', async (req, res, next) => {
     const updated = original.filter(event => event.id !== req.params.id);
     updated.sort((a, b) => b.sortDate - a.sortDate);
     await dataLayer.writeJSON('./data/calander.json', updated);
-    res.send(updated);
+    res.status(500).send(updated);
   }
   catch (err) {
-    res.send(err);
+    res.status(500).send(err);
     next();
   }
 })
 
 
+app.get('/user', async (req, res, next) => {
+  try {
+    const user = await dataLayer.readJSON('./data/user.json');
+    res.status(200).send(user);
+  }
+  catch (err) {
+    res.status(500).send(err);
+  }
+})
 
+
+app.post('/user', async (req, res, next) => {
+  try {
+    dataLayer.writeJSON('./data/user.json', req.body);
+    res.status(200).send(req.body)
+  }
+  catch (err) {
+    res.status(500).send(err);
+  }
+})
+
+
+app.get('/journal', async (req, res, next) => {
+  try {
+    const journal = await dataLayer.readJSON('./data/journal.json');
+    res.status(200).send(journal);
+  }
+  catch (err) {
+    res.status(500).send(err);
+  }
+})
+
+
+app.post('/journal', async (req, res, next) => {
+  try {
+    const original = await dataLayer.readJSON('./data/journal.json');
+    const updated = `${original} ${req.body}`;
+    await dataLayer.writeJSON('./journal.json', updated);
+    res.status(200).send(updated);
+  }
+  catch (err) {
+    res.status(500).send(err);
+  }
+})
 
 app.listen(PORT, () => console.log('Listening on port ', PORT));
